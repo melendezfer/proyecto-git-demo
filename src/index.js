@@ -10,6 +10,29 @@ const server = http.createServer((req, res) => {
       }),
     );
   }
+  if (req.url === "/users" && req.method === "POST") {
+    let body = "";
+
+    req.on("data", (chunk) => {
+      body += chunk.toString();
+    });
+
+    req.on("end", () => {
+      const user = JSON.parse(body);
+
+      console.log(user);
+
+      res.writeHead(201);
+
+      res.end(
+        JSON.stringify({
+          message: "Usuario creado",
+          user,
+        }),
+      );
+    });
+    return;
+  }
 
   if (req.url === "/status" && req.method === "GET") {
     return res.end(
