@@ -3,7 +3,18 @@ import { users } from "../data/users.js";
 export function getUsers(req, res) {
   res.end(JSON.stringify(users));
 }
+export function getUserById(req, res) {
+  const id = Number(req.params.id);
 
+  const user = users.find((u) => u.id === id);
+
+  if (!user) {
+    res.writeHead(404);
+    return res.end(JSON.stringify({ error: "Usuario no encontrado" }));
+  }
+
+  res.end(JSON.stringify(user));
+}
 export function createUser(req, res, body) {
   try {
     const data = JSON.parse(body);
@@ -11,9 +22,7 @@ export function createUser(req, res, body) {
     if (!data.name) {
       res.writeHead(400);
       return res.end(
-        JSON.stringify({
-          error: "El campo 'name' es obligatorio",
-        }),
+        JSON.stringify({ error: "El campo 'name' es obligatorio" }),
       );
     }
 
@@ -33,10 +42,6 @@ export function createUser(req, res, body) {
     );
   } catch {
     res.writeHead(400);
-    return res.end(
-      JSON.stringify({
-        error: "JSON inválido",
-      }),
-    );
+    return res.end(JSON.stringify({ error: "JSON inválido" }));
   }
 }
